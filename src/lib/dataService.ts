@@ -1,4 +1,4 @@
-﻿import { supabase } from './supabase';
+import { supabase } from './supabase';
 import { 
   ChurchSettings, 
   Pastor, 
@@ -598,5 +598,72 @@ export const dataService = {
       console.warn('Error getting contact messages:', e);
     }
     return JSON.parse(localStorage.getItem('icm_contact_messages') || '[]');
+  },
+
+  async deleteService(id: string): Promise<boolean> {
+    try {
+      await supabase.from('icm_services').delete().eq('id', id);
+    } catch (e) {
+      console.warn('Supabase deleteService error:', e);
+    }
+    const list = await this.getServices();
+    localStorage.setItem('icm_services', JSON.stringify(list.filter(s => s.id !== id)));
+    return true;
+  },
+
+  async deleteDonationMethod(id: string): Promise<boolean> {
+    try {
+      await supabase.from('icm_donation_methods').delete().eq('id', id);
+    } catch (e) {
+      console.warn('Supabase deleteDonationMethod error:', e);
+    }
+    const list = await this.getDonations();
+    localStorage.setItem('icm_donations', JSON.stringify(list.filter(d => d.id !== id)));
+    return true;
+  },
+
+  async deleteCellRequest(id: string): Promise<boolean> {
+    try {
+      await supabase.from('icm_cell_requests').delete().eq('id', id);
+    } catch (e) {
+      console.warn('Supabase deleteCellRequest error:', e);
+    }
+    const existing: CellRequest[] = JSON.parse(localStorage.getItem('icm_cell_requests') || '[]');
+    localStorage.setItem('icm_cell_requests', JSON.stringify(existing.filter(item => item.id !== id)));
+    return true;
+  },
+
+  async deleteIntercessionRequest(id: string): Promise<boolean> {
+    try {
+      await supabase.from('icm_intercession_requests').delete().eq('id', id);
+    } catch (e) {
+      console.warn('Supabase deleteIntercessionRequest error:', e);
+    }
+    const existing: IntercessionRequest[] = JSON.parse(localStorage.getItem('icm_intercession_requests') || '[]');
+    localStorage.setItem('icm_intercession_requests', JSON.stringify(existing.filter(item => item.id !== id)));
+    return true;
+  },
+
+  async deletePrayerRequest(id: string): Promise<boolean> {
+    try {
+      await supabase.from('icm_prayer_requests').delete().eq('id', id);
+    } catch (e) {
+      console.warn('Supabase deletePrayerRequest error:', e);
+    }
+    const existing: PrayerRequest[] = JSON.parse(localStorage.getItem('icm_prayer_requests') || '[]');
+    localStorage.setItem('icm_prayer_requests', JSON.stringify(existing.filter(item => item.id !== id)));
+    return true;
+  },
+
+  async deleteContactMessage(id: string): Promise<boolean> {
+    try {
+      await supabase.from('icm_contact_messages').delete().eq('id', id);
+    } catch (e) {
+      console.warn('Supabase deleteContactMessage error:', e);
+    }
+    const existing: ContactMessage[] = JSON.parse(localStorage.getItem('icm_contact_messages') || '[]');
+    localStorage.setItem('icm_contact_messages', JSON.stringify(existing.filter(item => item.id !== id)));
+    return true;
   }
 };
+

@@ -1,4 +1,4 @@
-﻿
+
 import React, { useState, useEffect } from 'react';
 import { dataService, defaultSettings } from '../../lib/dataService';
 import { 
@@ -78,6 +78,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToPublic }) => {
     image_url: 'https://images.unsplash.com/photo-1510525009512-ad7fc13eefab?auto=format&fit=crop&q=80&w=1000',
     description: '',
   });
+
+  const [newService, setNewService] = useState<Partial<ChurchService>>({
+    name: '',
+    day: 'Domingos',
+    time: '',
+    location: 'Santuario Principal',
+    description: '',
+    order_index: 10,
+    is_active: true,
+  });
+
+  const [newDonation, setNewDonation] = useState<Partial<DonationMethod>>({
+    bank_name: '',
+    account_type: 'Cuenta de Ahorros',
+    account_number: '',
+    account_holder: 'ICM PORTAL DE GLORIA',
+    instructions: '',
+    is_active: true,
+  });
+
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -220,6 +240,88 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToPublic }) => {
     setPrayers(prayers.map(p => p.id === id ? { ...p, status } : p));
     showNotification(`Petición de oración: ${status}`);
   };
+
+  const handleDeleteCell = async (id: string) => {
+    if (window.confirm('¿Seguro que deseas eliminar esta solicitud de célula?')) {
+      await dataService.deleteCellRequest(id);
+      setCells(cells.filter(c => c.id !== id));
+      showNotification('Solicitud de célula eliminada.');
+    }
+  };
+
+  const handleDeleteIntercession = async (id: string) => {
+    if (window.confirm('¿Seguro que deseas eliminar esta postulación a intercesión?')) {
+      await dataService.deleteIntercessionRequest(id);
+      setIntercessions(intercessions.filter(i => i.id !== id));
+      showNotification('Postulación de intercesión eliminada.');
+    }
+  };
+
+  const handleDeletePrayer = async (id: string) => {
+    if (window.confirm('¿Seguro que deseas eliminar esta petición de oración?')) {
+      await dataService.deletePrayerRequest(id);
+      setPrayers(prayers.filter(p => p.id !== id));
+      showNotification('Petición de oración eliminada.');
+    }
+  };
+
+  const handleDeleteMessage = async (id: string) => {
+    if (window.confirm('¿Seguro que deseas eliminar este mensaje de contacto?')) {
+      await dataService.deleteContactMessage(id);
+      setMessages(messages.filter(m => m.id !== id));
+      showNotification('Mensaje eliminado.');
+    }
+  };
+
+  const handleDeleteService = async (id: string) => {
+    if (window.confirm('¿Seguro que deseas eliminar este servicio o culto?')) {
+      await dataService.deleteService(id);
+      setServices(services.filter(s => s.id !== id));
+      showNotification('Servicio eliminado.');
+    }
+  };
+
+  const handleCreateService = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newService.name) return;
+    await dataService.saveService(newService);
+    showNotification('Nuevo servicio creado con éxito.');
+    setNewService({
+      name: '',
+      day: 'Domingos',
+      time: '',
+      location: 'Santuario Principal',
+      description: '',
+      order_index: 10,
+      is_active: true,
+    });
+    loadAllData();
+  };
+
+  const handleDeleteDonation = async (id: string) => {
+    if (window.confirm('¿Seguro que deseas eliminar este método de donación?')) {
+      await dataService.deleteDonationMethod(id);
+      setDonations(donations.filter(d => d.id !== id));
+      showNotification('Método de donación eliminado.');
+    }
+  };
+
+  const handleCreateDonation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newDonation.bank_name || !newDonation.account_number) return;
+    await dataService.saveDonationMethod(newDonation);
+    showNotification('Nuevo método de donación añadido con éxito.');
+    setNewDonation({
+      bank_name: '',
+      account_type: 'Cuenta de Ahorros',
+      account_number: '',
+      account_holder: 'ICM PORTAL DE GLORIA',
+      instructions: '',
+      is_active: true,
+    });
+    loadAllData();
+  };
+
 
   if (!isAuthenticated) {
     return (
