@@ -145,7 +145,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToPublic }) => {
       setIsAuthenticated(true);
       setAuthError('');
     } else {
-      setAuthError('Contraseña incorrecta. Utilice: admin2026');
+      setAuthError('Contraseña de administración incorrecta. Por favor intente nuevamente.');
     }
   };
 
@@ -341,7 +341,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToPublic }) => {
               Portal de Gestión Pastoral
             </h2>
             <p className="text-xs text-zinc-400 mt-1">
-              Ingresa la clave de acceso de administradores (ej: admin2026).
+              Ingresa la clave de acceso de administradores autorizados.
             </p>
           </div>
 
@@ -361,7 +361,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBackToPublic }) => {
                 required
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
-                placeholder="admin2026"
+                placeholder="••••••••"
                 className="w-full px-4 py-3 rounded-xl bg-dark-950 border border-zinc-800 text-white placeholder-zinc-600 focus:outline-none focus:border-gold-400 text-sm"
               />
             </div>
